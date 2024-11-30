@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Luke 1 and 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: #ffffff;
+            padding: 20px;
+            width: 50%;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .stimulus {
+            background-color: #e8f5e9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-style: italic;
+        }
+        .question-number {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .question-text {
+            margin-bottom: 20px;
+        }
+        .answer-button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #42a5f5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .answer-button:hover {
+            background-color: #1e88e5;
+        }
+        #explanation {
+            background-color: #fff3cd;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+        #next-btn {
+            margin-top: 20px;
+            display: none;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #next-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Luke 1 and 2</h1>
+        <div id="name-section">
+            <label for="name">Enter your name:</label>
+            <input type="text" id="name" placeholder="Your Name" required>
+            <button id="start-btn">Start Quiz</button>
+        </div>
+        <div id="quiz-section" style="display:none;">
+            <div id="stimulus" class="stimulus"></div>
+            <p class="question-number" id="question-number"></p>
+            <p class="question-text" id="question-text"></p>
+            <div id="choices-container"></div>
+            <div id="explanation"></div>
+            <button id="next-btn">Next Question</button>
+        </div>
+        <div id="result-section" style="display:none;">
+            <h2>Quiz Completed!</h2>
+            <p id="result-text"></p>
+        </div>
+    </div>
+
+    <script>
+const questions = [
+    {
+        question: "Who was the angel that appeared to Mary to announce the birth of Jesus?",
+        choices: [
+            "Michael",
+            "Gabriel",
+            "Raphael",
+            "Uriel"
+        ],
+        correctAnswer: 1,
+        explanation: "The angel Gabriel was sent by God to announce to Mary that she would give birth to Jesus. Michael is another angel mentioned in the Bible, but not in this context."
+    },
+    {
+        question: "What was the name of Mary’s husband?",
+        choices: [
+            "Joseph",
+            "Zechariah",
+            "John",
+            "Simon"
+        ],
+        correctAnswer: 0,
+        explanation: "Mary was betrothed to Joseph, a carpenter. Zechariah was John the Baptist's father, and John was his son."
+    },
+    {
+        question: "What town was Jesus born in?",
+        choices: [
+            "Nazareth",
+            "Bethlehem",
+            "Jerusalem",
+            "Capernaum"
+        ],
+        correctAnswer: 1,
+        explanation: "Jesus was born in Bethlehem, fulfilling the prophecy of the Messiah's birthplace. Nazareth is where Mary and Joseph lived before traveling to Bethlehem."
+    },
+    {
+        question: "Why did Mary and Joseph travel to Bethlehem?",
+        choices: [
+            "To visit family",
+            "To obey the Roman census",
+            "To escape King Herod",
+            "To worship at the temple"
+        ],
+        correctAnswer: 1,
+        explanation: "Mary and Joseph traveled to Bethlehem to register for the Roman census because Joseph was of the house and lineage of David."
+    },
+    {
+        question: "Who was the first to hear the news of Jesus' birth?",
+        choices: [
+            "The wise men",
+            "The shepherds",
+            "The priests",
+            "The soldiers"
+        ],
+        correctAnswer: 1,
+        explanation: "The shepherds were the first to hear the news of Jesus' birth when angels appeared to them in the fields."
+    },
+    {
+        question: "What sign did the angels tell the shepherds to look for?",
+        choices: [
+            "A shining star",
+            "A baby lying in a manger",
+            "A dove in the sky",
+            "A bright light"
+        ],
+        correctAnswer: 1,
+        explanation: "The angels told the shepherds to look for a baby wrapped in cloths and lying in a manger."
+    },
+    {
+        question: "What did the angels say to the shepherds?",
+        choices: [
+            "'Fear not, for I bring you good tidings of great joy.'",
+            "'Go and tell everyone in Jerusalem.'",
+            "'The Lord is angry with His people.'",
+            "'Rise and follow the star.'"
+        ],
+        correctAnswer: 0,
+        explanation: "The angels said, 'Fear not, for I bring you good tidings of great joy,' announcing the birth of Jesus, the Savior."
+    },
+    {
+        question: "What did Mary and Joseph offer as a sacrifice at the temple for Jesus?",
+        choices: [
+            "A lamb",
+            "Two doves or pigeons",
+            "A bull",
+            "A loaf of bread"
+        ],
+        correctAnswer: 1,
+        explanation: "Mary and Joseph offered two doves or pigeons, which was the offering for those who could not afford a lamb (Leviticus 12:8)."
+    },
+    {
+        question: "Who was the prophetess that recognized Jesus as the Messiah at the temple?",
+        choices: [
+            "Mary Magdalene",
+            "Anna",
+            "Martha",
+            "Elizabeth"
+        ],
+        correctAnswer: 1,
+        explanation: "Anna, the prophetess, recognized Jesus as the Messiah when His parents brought Him to the temple."
+    },
+    {
+        question: "Who was the man at the temple who had been promised by the Holy Spirit that he would not die before seeing the Messiah?",
+        choices: [
+            "Simeon",
+            "Zechariah",
+            "Joseph",
+            "Peter"
+        ],
+        correctAnswer: 0,
+        explanation: "Simeon had been promised by the Holy Spirit that he would not die before seeing the Messiah. He blessed Jesus when Mary and Joseph brought Him to the temple."
+    },
+    {
+        question: "What did Simeon say when he held baby Jesus?",
+        choices: [
+            "'Now my eyes have seen your salvation.'",
+            "'This child will be a great prophet.'",
+            "'I will tell everyone about this child.'",
+            "'He will be a carpenter like Joseph.'"
+        ],
+        correctAnswer: 0,
+        explanation: "Simeon said, 'Now my eyes have seen your salvation,' acknowledging Jesus as the fulfillment of God’s promise."
+    },
+    {
+        question: "How did the shepherds react after visiting Jesus?",
+        choices: [
+            "They told everyone about Him and praised God.",
+            "They returned to their flocks in silence.",
+            "They brought gifts to Mary and Joseph.",
+            "They stayed at the manger for many days."
+        ],
+        correctAnswer: 0,
+        explanation: "The shepherds spread the news of Jesus' birth and glorified and praised God for what they had seen and heard."
+    },
+    {
+        question: "What is the name of the song of praise that Mary sang after visiting Elizabeth?",
+        choices: [
+            "The Magnificat",
+            "The Gloria",
+            "The Psalms",
+            "The Hallelujah"
+        ],
+        correctAnswer: 0,
+        explanation: "Mary’s song of praise is called 'The Magnificat,' in which she glorifies God for His blessings and mercy."
+    },
+    {
+        question: "Who was the Roman emperor at the time of Jesus' birth?",
+        choices: [
+            "Augustus",
+            "Herod",
+            "Caesar",
+            "Tiberius"
+        ],
+        correctAnswer: 0,
+        explanation: "Caesar Augustus was the Roman emperor who ordered the census that brought Mary and Joseph to Bethlehem."
+    },
+    {
+        question: "How old was Jesus when He was presented at the temple?",
+        choices: [
+            "Eight days old",
+            "One month old",
+            "Forty days old",
+            "One year old"
+        ],
+        correctAnswer: 2,
+        explanation: "According to Jewish law, a child was presented at the temple 40 days after birth for purification and dedication (Leviticus 12:1-4)."
+    }
+];
+
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userName = "";
+
+        const nameSection = document.getElementById('name-section');
+        const quizSection = document.getElementById('quiz-section');
+        const resultSection = document.getElementById('result-section');
+        const stimulusElement = document.getElementById('stimulus');
+        const questionNumberElement = document.getElementById('question-number');
+        const questionTextElement = document.getElementById('question-text');
+        const choicesContainer = document.getElementById('choices-container');
+        const explanationElement = document.getElementById('explanation');
+        const nextButton = document.getElementById('next-btn');
+        const nameInput = document.getElementById('name');
+        const startButton = document.getElementById('start-btn');
+        const resultText = document.getElementById('result-text');
+
+        startButton.addEventListener('click', () => {
+            userName = nameInput.value.trim();
+            if (!userName) {
+                alert("Please enter your name to start the quiz.");
+                return;
+            }
+            nameSection.style.display = 'none';
+            quizSection.style.display = 'block';
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionNumberElement.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            stimulusElement.textContent = currentQuestion.stimulus;
+            questionTextElement.textContent = currentQuestion.question;
+            choicesContainer.innerHTML = '';
+            explanationElement.style.display = 'none';
+            nextButton.style.display = 'none';
+
+            currentQuestion.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-button';
+                button.textContent = choice;
+                button.addEventListener('click', () => checkAnswer(index));
+                choicesContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const currentQuestion = questions[currentQuestionIndex];
+            explanationElement.style.display = 'block';
+
+            if (selectedIndex === currentQuestion.correctAnswer) {
+                explanationElement.textContent = "Correct! " + currentQuestion.explanation;
+                score++;
+                nextButton.style.display = 'block';
+            } else {
+                explanationElement.textContent = "Incorrect. " + currentQuestion.explanation;
+                nextButton.style.display = 'block';
+            }
+        }
+
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        });
+
+        function endQuiz() {
+            quizSection.style.display = 'none';
+            resultSection.style.display = 'block';
+            resultText.textContent = `${userName}, you scored ${score} out of ${questions.length}!`;
+        }
+    </script>
+</body>
+</html>
